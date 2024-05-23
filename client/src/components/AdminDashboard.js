@@ -1,51 +1,56 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/AdminDashboard.js
+import React, { useState, useEffect } from 'react';
 import { getResults, deleteResult } from './api';
+import '../styles/AdminDashboard.css';
 
 function AdminDashboard() {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
+    const fetchResults = async () => {
+      const data = await getResults();
+      if (data.success) {
+        setResults(data.results);
+      }
+    };
     fetchResults();
   }, []);
 
-  const fetchResults = async () => {
-    const data = await getResults();
-    setResults(data);
-  };
-
-  const handleDelete = async (id) => {
-    await deleteResult(id);
-    fetchResults();
+  const handleDelete = async (studentName) => {
+    const response = await deleteResult(studentName);
+    if (response.success) {
+      setResults(results.filter(result => result.student_name !== studentName));
+    } else {
+      alert(response.message || 'Failed to delete result');
+    }
   };
 
   return (
-    <div>
-      <h2>Admin Dashboard</h2>
+    <div className="admin-dashboard">
+      <h1>Admin Dashboard</h1>
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Student Name</th>
             <th>Telugu</th>
             <th>Hindi</th>
             <th>English</th>
             <th>Maths</th>
             <th>Attendance</th>
-            <th>Actions</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {results.map(result => (
             <tr key={result.id}>
-              <td>{result.id}</td>
-              <td>{result.studentName}</td>
+              <td>{result.student_name}</td>
               <td>{result.telugu}</td>
               <td>{result.hindi}</td>
               <td>{result.english}</td>
               <td>{result.maths}</td>
               <td>{result.attendance}</td>
               <td>
-                <button onClick={() => handleDelete(result.id)}>Delete</button>
+                <button onClick={() => handleDelete(result.student_name)}>Delete</button>
               </td>
             </tr>
           ))}

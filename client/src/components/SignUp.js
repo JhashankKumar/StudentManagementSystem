@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from './api'; // API function to handle signup
+import '../styles/SignUp.css'; // Importing the CSS file
+import {signUp} from './api';
 
 function Signup() {
   const [email, setEmail] = useState('');
@@ -11,18 +12,34 @@ function Signup() {
     e.preventDefault();
     const success = await signUp(email, password);
     if (success) {
-      navigate.push('/login');
+      navigate('/login');
     } else {
-      // Here we need to Handle signup failure
+      alert('Signup failed');
     }
   };
 
   return (
-    <div>
-      <h2>Signup</h2>
+    <div className="signup">
+      <h1>Signup</h1>
       <form onSubmit={handleSubmit}>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
         <button type="submit">Signup</button>
       </form>
     </div>
